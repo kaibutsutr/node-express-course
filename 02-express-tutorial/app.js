@@ -5,5 +5,12 @@ app.listen(port, () => {
   console.log(`listening on port ${port}`);
 });
 app.get("/", (req, res) => {
-  res.send("Homepage");
+  res.status(200).send("Homepage");
+});
+
+app.get("/about", (req, res) => {
+  res.status(200).send("About");
+});
+app.all("*", (req, res) => {
+  res.status(404).send("Page not Found!!!");
 });
