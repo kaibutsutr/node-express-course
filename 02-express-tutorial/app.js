@@ -37,6 +37,26 @@ app.get("/api/products", (req, res) => {
   res.json(newProducts); // send new mapped json file
 });
 
+//get a single product
+app.get("/api/products/:productID", (req, res) => {
+  const { productID } = req.params; // requested params objesinden productID degerini string olarak productID degiskenine ata
+  const newProduct = products.find(
+    (product) => product.id === Number(productID) // string oldugu icin Number(stringName) ile string numaraya cevrildi.
+    //(product) => product.id === parseInt(productID)                also works
+  );
+  //if we cant find it send an errror
+  if (!newProduct) {
+    // if (!objectName) returns true if undefined
+    // if undefined send error     (newProduct === undefined) also works
+    res.status(404).send("Page not found here");
+  }
+  res.json(newProduct);
+});
+
+app.get("/api/products/about", (req, res) => {
+  res.send("About page is here");
+});
+
 app.all("*", (req, res) => {
   res.status(404).send("Page not Found!!!"); //200 success 404 failure
 });
