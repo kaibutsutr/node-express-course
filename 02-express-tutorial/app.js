@@ -53,8 +53,26 @@ app.get("/api/products/:productID", (req, res) => {
   res.json(newProduct);
 });
 
-app.get("/api/products/about", (req, res) => {
-  res.send("About page is here");
+// query strings
+app.get("/api/v1/query", (req, res) => {
+  const { search, limit } = req.query; // take search and limit values from query string and save it in search and limit
+  let sortedProducts = [...products]; // take all products into sortedproducts with ... destructor
+  if (search) {
+    // if not undefined do this
+    sortedProducts = products.filter((products) => {
+      return products.name.startsWith(search);
+    });
+  }
+  if (limit) {
+    // if limit exists get the first limit numbers of array
+    sortedProducts = sortedProducts.slice(0, Number(limit)); // convert limit string into a number
+  }
+  if (sortedProducts < 1) {
+    // if array is empty send a empty array message with succhess status
+    return res.status(200).send("Results not found!");
+  }
+
+  res.status(200).json(sortedProducts);
 });
 
 app.all("*", (req, res) => {
