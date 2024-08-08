@@ -1,29 +1,21 @@
 const express = require("express");
 const app = express();
-const path = require("path"); //node path for files
-const port = 3000;
-const { products } = require("./data"); //export data.js as products object
-const logger = require("./logger"); // import logger function
-const authorize = require("./authorize");
-const morgan = require("morgan"); // third party middleware npm
-// app.use(logger); // .middleware function. use logger function on every call
+const port = 5000;
+const { people } = require("./data"); // import people array
 
-// app.use([logger, authorize]); // use these two middleware functions in order
-app.use(morgan("tiny")); // use morgan middleware every request
-
+app.use(express.static("./methods-public")); // use these static files for the app
+app.use(express.urlencoded({ extended: false })); // use urlencoder middleware to parse html body for data
+app.get("/api/people", (req, res) => {
+  res.status(200).json({ success: true, data: people }); //send json object with success true and people array
+});
+app.post("/login", (req, res) => {
+  const { name } = req.body; // parse name value from body
+  if (name) {
+    res.status(200).send(`Welcome ${name}`);
+  } else {
+    res.status(401).send("Please enter your login info");
+  }
+});
 app.listen(port, () => {
   console.log(`listening on port ${port}`);
-});
-
-app.get("/", (req, res) => {
-  res.send("Homepage v2");
-});
-app.get("/about", (req, res) => {
-  res.send("About v2");
-});
-app.get("/api", authorize, (req, res) => {
-  res.send("API here");
-});
-app.get("/api/courses", (req, res) => {
-  res.send("Courses here");
 });
