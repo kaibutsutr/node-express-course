@@ -16,7 +16,16 @@ app.post("/api/people", (req, res) => {
   if (name) {
     res.status(201).json({ success: true, person: name }); // 201 is successfull post request. Send a Json file with new persons name
   } else {
-    res.status(400).json({ success: false, msg: "please provide a name" }); // if form is empty, throw an error message in your req.body file
+    res.status(400).json({ success: false, msg: "please provide a name" }); // if form is empty, throw an error message in your req.body file.Bad request
+  }
+});
+
+app.post("/api/postman/people", (req, res) => {
+  const { name } = req.body; // destructure name property from the body.
+  if (name) {
+    res.status(201).json({ success: true, data: [...people, { name: name }] }); // add name data to at the end of people array  ... add to the end
+  } else {
+    res.status(400).json({ success: false, msg: "please provide a name" }); // if form is empty, throw an error message in your req.body file.Bad request
   }
 });
 
