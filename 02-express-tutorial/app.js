@@ -20,7 +20,7 @@ app.post("/api/people", (req, res) => {
   }
 });
 
-app.post("/api/postman/people", (req, res) => {
+app.post("/api/people/postman", (req, res) => {
   const { name } = req.body; // destructure name property from the body.
   if (name) {
     res.status(201).json({ success: true, data: [...people, { name: name }] }); // add name data to at the end of people array  ... add to the end
@@ -37,6 +37,46 @@ app.post("/login", (req, res) => {
     res.status(401).send("Login failed! Please enter your login info");
   }
 });
+//put
+app.put("/api/people/:id", (req, res) => {
+  const { id } = req.params; //destruct id param from params
+  const { name } = req.body; //destruct name from body
+  const person = people.find((person) => person.id === Number(id)); //reference a person object from people array with given id
+
+  if (!person) {
+    //if a person with given id doesnt exist, throw an error
+    return res
+      .status(400)
+      .json({ success: false, msg: "please provide a valid id" }); // if id cant be found give error
+  }
+  const newPeople = people.map((person) => {
+    // if id exists, create a new people array since you cant edit them in js.
+    if (person.id === Number(id)) {
+      //Find person with given id in the array and change its name value to new one
+      person.name = name;
+    }
+
+    return person; // return new object with edited name
+  });
+  res.status(201).json({ success: true, data: newPeople }); // send newPeople instead of people since we changed the array
+});
+//delete
+app.delete("/api/people/:id", (req, res) => {
+  const { id } = req.params; //destruct id param from params
+  const person = people.find((person) => person.id === Number(id)); //reference a person object from people array with given id
+
+  if (!person) {
+    //if a person with given id doesnt exist, throw an error
+    return res
+      .status(400)
+      .json({ success: false, msg: "Such id doesnt exist" }); // if id cant be found give error
+  }
+  const newPeople = people.filter((person) => person.id !== Number(id)); // filter a new array with elements not matching the given id
+  // how to delete array elements in js
+  res.status(201).json({ success: true, data: newPeople }); // send newPeople array with deleted element
+});
+
+//listen
 app.listen(port, () => {
   console.log(`listening on port ${port}`); // listen on predefined port
 });
